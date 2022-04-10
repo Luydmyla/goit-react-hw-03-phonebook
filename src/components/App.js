@@ -6,6 +6,7 @@ import Filter from './Filter';
 import './container.css';
 class App extends Component {
   state = {
+    // contacts: [],
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
       { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
@@ -46,6 +47,29 @@ class App extends Component {
       filter: '',
     }));
   };
+  componentDidMount() {
+    // console.log('App componentDidMount');
+    const contacts = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(contacts);
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('App   componentDidUpdate');
+    console.log(prevState);
+    console.log(this.state);
+    // проверяем, если состояние contacts до обновления не равно состоянию contacts после обновления
+    // (а они не равны, поскольку при изменении contacts(стейта)создаются новые масивы и сравнивая по ссылке эти массивы не равны)
+    // если они не равны, значит стейт обновился,  то записываем в хранилище
+    if (this.state.contacts !== prevState.contacts) {
+      // console.log('обновился стейт contacts, записываем его в хранилище');
+      // берем текущие contacts и записиваем их в локалсторидж
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
     const { filter } = this.state;
     const visibleContacts = this.getVisibleContacts();
